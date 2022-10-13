@@ -1,0 +1,21 @@
+name: geograph_interpolator
+
+channels:
+  - defaults
+  - conda-forge
+
+dependencies:
+  - ipykernel
+  - python=3.9
+  - numpy=1.23.0
+  - conda-forge::pyvista
+  - conda-forge::SimPEG
+  - defaults::scipy==1.8
+  - defaults::intel-openmp
+
+  # note cpu requirements are 
+  # you may need to change versions if yours is not and you want gpu support
+  - dglteam::dgl
+  - pytorch::pytorch>=1.10
+  - pytorch::torchvision>=0.11
+  - pytorch::cpuonly  
