@@ -280,8 +280,31 @@ def create_dgl_graph(nodes,edges):
 
     return(graph)
 
+def gnn_interpolate_grid(model, graph, node_feats=5,epochs=10):
 
+    node_embed  = nn.Embedding(graph.num_nodes(),node_feats)
 
+    inputs  = node_embed.weight
+    labels  = graph.ndata['n_dat']
+    filt    = torch.where(graph.srcdata['t_val']==1,True,False).flatten()
+    optimizer = torch.optim.Adam(itertools.chain(model.parameters(),node_embed.parameters()), lr=0.01)
+    
+    all_logits = []
+    all___loss = []
+    for epoch in tqdm(range(epochs)):
+
+        logits = model(graph,inputs)
+
+        # we save the logits for visualization later
+        all_logits.append(logits.detach())
+        loss = F.l1_loss(logits[filt], labels[filt])
+
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+        all___loss.append(loss.item())    
+    
+    return(all___loss,all_logits)
 
 def gnn_interpolate(model, graph, node_feats=5,epochs=10):
 
